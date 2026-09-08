@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>{{basics.name}} - Resume</title>
+  <style>
+    {{> baseStyles}}
+    body {
+      --accent: {{accentColor}};
+      --subtitle-weight: {{subtitleWeight}};
+      --subtitle-style: {{subtitleFontStyle}};
+      font-family: {{fontFamily}}, 'Helvetica Neue', Arial, sans-serif;
+      color: #1f2937;
+      margin: 0;
+      font-size: {{fontSize}}px;
+      line-height: 1.5;
+    }
+    .page { display: flex; min-height: 100vh; }
+    .main { flex: 1.6; min-width: 0; padding: 28px 30px; }
+    .sidebar {
+      flex: 1; min-width: 0;
+      background: var(--accent);
+      color: #f0fdfa;
+      padding: 28px 22px;
+    }
+    h1 { font-size: 18px; margin: 0 0 2px; font-weight: 700; }
+    h1.uppercase { text-transform: uppercase; }
+    .label { font-size: 11px; color: var(--accent); margin: 0 0 8px; font-weight: 600; }
+    .contact { font-size: 9.5px; color: #4b5563; margin-bottom: 12px; }
+    .contact span { margin-right: 12px; }
+    section { margin-bottom: 14px; }
+    .main h2 { color: var(--accent); border-bottom: 1px solid #e5e7eb; }
+    .sidebar h2 { color: #fff; border-bottom-color: rgba(255,255,255,0.3); }
+    h2 {
+      font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em;
+      margin: 0 0 8px; font-weight: 700; padding-bottom: 4px;
+    }
+    .item-title { font-weight: 700; font-size: 11px; }
+    .item-subtitle { font-size: 10px; }
+    .item-dates { float: right; font-size: 9.5px; color: #6b7280; }
+    .sidebar .item-title, .sidebar .item-subtitle, .sidebar .item-dates { color: #f0fdfa; }
+    /* Sidebar skills render as a plain bulleted list, not tag pills (design reference: screenshot). */
+    .sidebar .skill-tags { display: flex; flex-direction: column; gap: 4px; }
+    .sidebar .skill-tag {
+      background: none; color: #f0fdfa; padding: 1px 0 1px 12px; position: relative; font-size: 10px;
+    }
+    .sidebar .skill-tag::before {
+      content: ""; position: absolute; left: 0; top: 6px;
+      width: 4px; height: 4px; border-radius: 50%; background: #f0fdfa;
+    }
+    .sidebar .icon-avatar { background: rgba(255,255,255,0.15); color: #f0fdfa; }
+    .sidebar .achievement-item { border: none; padding: 0; }
+    .sidebar .level-dots .level-dot { background: rgba(255,255,255,0.35); }
+    .sidebar .level-dots .level-dot.filled { background: #fff; }
+    .level-dots { display: inline-flex; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <main class="main">
+      <h1 class="{{#if profileSettings.uppercaseName}}uppercase{{/if}}">{{basics.name}}</h1>
+      {{#if profileSettings.showHeadline}}<p class="label">{{basics.headline}}</p>{{/if}}
+      <div class="contact">
+        {{#if profileSettings.showPhone}}{{#if basics.phone}}<span>{{icon "phone"}}{{basics.phone}}</span>{{/if}}{{/if}}
+        {{#if profileSettings.showEmail}}{{#if basics.email}}<span>{{icon "email"}}{{basics.email}}</span>{{/if}}{{/if}}
+        {{#if profileSettings.showWebsite}}{{#if basics.website.url}}<span>{{icon "link"}}{{basics.website.url}}</span>{{/if}}{{/if}}
+        {{#if profileSettings.showLocation}}{{#if basics.location}}<span>{{icon "location"}}{{basics.location}}</span>{{/if}}{{/if}}
+      </div>
+      {{#unless summary.hidden}}{{#if summary.content.length}}
+      <section>
+        <h2>{{icon "summary"}}{{summary.title}}</h2>
+        {{{richText summary.content}}}
+      </section>
+      {{/if}}{{/unless}}
+      {{#each columns.[0]}}{{> sectionsBody}}{{/each}}
+    </main>
+    <aside class="sidebar">
+      {{#each columns.[1]}}{{> sectionsBody}}{{/each}}
+    </aside>
+  </div>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>{{basics.name}} - Resume</title>
+  <style>
+    {{> baseStyles}}
+    body {
+      --accent: {{accentColor}};
+      --subtitle-weight: {{subtitleWeight}};
+      --subtitle-style: {{subtitleFontStyle}};
+      font-family: {{fontFamily}}, 'Helvetica Neue', Arial, sans-serif;
+      color: #1f2937;
+      margin: 0;
+      padding: 30px 36px;
+      font-size: {{fontSize}}px;
+      line-height: 1.5;
+    }
+    .columns { display: flex; gap: 26px; }
+    .column-left { flex: 0 0 34%; border-right: 2px solid var(--accent); padding-right: 20px; }
+    .column-right { flex: 1; min-width: 0; }
+    .photo { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-bottom: 10px; }
+    .photo.photo-square { border-radius: 8px; }
+    h1 { font-size: 18px; margin: 0 0 2px; font-weight: 700; }
+    h1.uppercase { text-transform: uppercase; }
+    .label { font-size: 11px; color: var(--accent); margin: 0 0 10px; font-weight: 600; }
+    .contact { font-size: 9.5px; color: #4b5563; margin-bottom: 14px; }
+    .contact div { margin-bottom: 4px; }
+    section { margin-bottom: 14px; }
+    h2 {
+      font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em;
+      color: var(--accent); margin: 0 0 8px; font-weight: 700;
+    }
+    .item-title { font-weight: 700; font-size: 11px; }
+    .item-subtitle { font-size: 10px; }
+    .item-dates { float: right; font-size: 9.5px; color: #6b7280; }
+    .tags span { background: #fff7ed; color: var(--accent); }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 4px 10px; }
+    .icon-avatar { background: #fff7ed; color: var(--accent); }
+  </style>
+</head>
+<body>
+  <div class="columns">
+    <div class="column-left">
+      {{#unless picture.hidden}}{{#if picture.url}}
+        <img class="photo {{#if (eq profileSettings.photoStyle "square")}}photo-square{{/if}}" src="{{picture.url}}" />
+      {{/if}}{{/unless}}
+      <h1 class="{{#if profileSettings.uppercaseName}}uppercase{{/if}}">{{basics.name}}</h1>
+      {{#if profileSettings.showHeadline}}<p class="label">{{basics.headline}}</p>{{/if}}
+      <div class="contact">
+        {{#if profileSettings.showEmail}}{{#if basics.email}}<div>{{icon "email"}}{{basics.email}}</div>{{/if}}{{/if}}
+        {{#if profileSettings.showPhone}}{{#if basics.phone}}<div>{{icon "phone"}}{{basics.phone}}</div>{{/if}}{{/if}}
+        {{#if profileSettings.showLocation}}{{#if basics.location}}<div>{{icon "location"}}{{basics.location}}</div>{{/if}}{{/if}}
+        {{#if profileSettings.showWebsite}}{{#if basics.website.url}}<div>{{icon "link"}}{{basics.website.url}}</div>{{/if}}{{/if}}
+      </div>
+      {{#unless summary.hidden}}{{#if summary.content.length}}
+      <section>
+        <h2>{{icon "summary"}}{{summary.title}}</h2>
+        {{{richText summary.content}}}
+      </section>
+      {{/if}}{{/unless}}
+      {{#each columns.[0]}}{{> sectionsBody}}{{/each}}
+    </div>
+    <div class="column-right">
+      {{#each columns.[1]}}{{> sectionsBody}}{{/each}}
+    </div>
+  </div>
+</body>
+</html>

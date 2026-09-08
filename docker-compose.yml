@@ -1,0 +1,88 @@
+services:
+  mongo:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  pii-data-service:
+    build:
+      context: ./apps/pii-data-service
+    environment:
+      REDIS_URL: redis://redis:6379/0
+      CORS_ORIGINS: '["http://localhost:3000","http://localhost:8000"]'
+    ports:
+      - "8100:8100"
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  ai-service:
+    build:
+      context: ./apps/ai-service
+    environment:
+      MONGODB_URL: mongodb://mongo:27017
+      MONGODB_DB_NAME: resume_ai
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-5-nano}
+      CORS_ORIGINS: '["http://localhost:3000"]'
+      PII_SERVICE_URL: http://pii-data-service:8100
+    ports:
+      - "8000:8000"
+    depends_on:
+      mongo:
+        condition: service_healthy
+      pii-data-service:
+        condition: service_started
+
+  pdf-service:
+    build:
+      context: .
+      dockerfile: apps/pdf-service/Dockerfile
+    ports:
+      - "4000:4000"
+
+  ats-service:
+    build:
+      context: ./apps/ats-service
+    environment:
+      CORS_ORIGINS: '["http://localhost:3000"]'
+    ports:
+      - "8200:8200"
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    environment:
+      AI_SERVICE_URL: http://ai-service:8000
+      PDF_SERVICE_URL: http://pdf-service:4000
+      ATS_SERVICE_URL: http://ats-service:8200
+    ports:
+      - "3000:3000"
+    depends_on:
+      - ai-service
+      - pdf-service
+      - ats-service
+
+volumes:
+  mongo_data:
+  redis_data:

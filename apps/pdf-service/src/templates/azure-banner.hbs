@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>{{basics.name}} - Resume</title>
+  <style>
+    {{> baseStyles}}
+    body {
+      --accent: {{accentColor}};
+      --subtitle-weight: {{subtitleWeight}};
+      --subtitle-style: {{subtitleFontStyle}};
+      font-family: {{fontFamily}}, 'Helvetica Neue', Arial, sans-serif;
+      color: #1f2937;
+      margin: 0;
+      font-size: {{fontSize}}px;
+      line-height: 1.5;
+    }
+    .banner {
+      background: var(--accent); color: #fff;
+      border-radius: 14px 14px 0 0;
+      padding: 24px 36px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .banner h1 { font-size: 19px; margin: 0 0 3px; font-weight: 800; color: #fff; }
+    .banner h1.uppercase { text-transform: uppercase; }
+    .banner .label { font-size: 10.5px; color: rgba(255,255,255,0.85); margin: 0 0 8px; font-weight: 500; }
+    .banner .contact { font-size: 9.5px; color: rgba(255,255,255,0.9); }
+    .banner .contact span { margin-right: 14px; }
+    .banner .contact .ic { color: rgba(255,255,255,0.85); }
+    .photo { width: 58px; height: 58px; border-radius: 50%; object-fit: cover; flex-shrink: 0; border: 2px solid rgba(255,255,255,0.6); }
+    .photo.photo-square { border-radius: 10px; }
+    .body-content { padding: 24px 36px; }
+    .columns { display: flex; gap: 26px; }
+    .column-main { flex: 1.5; min-width: 0; }
+    .column-side { flex: 1; min-width: 0; }
+    section { margin-bottom: 14px; }
+    h2 {
+      font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em;
+      color: var(--accent); border-bottom: 1px solid #e5e7eb; padding-bottom: 4px; margin: 0 0 8px; font-weight: 700;
+    }
+    .item-title { font-weight: 700; font-size: 11px; }
+    .item-subtitle { font-size: 10px; }
+    .item-dates { float: right; font-size: 9.5px; color: #6b7280; }
+    .tags span { background: color-mix(in srgb, var(--accent) 12%, white); color: var(--accent); }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 4px 10px; }
+    .icon-avatar { background: color-mix(in srgb, var(--accent) 14%, white); color: var(--accent); }
+    /* Key Achievements read as a plain icon + title + description row here, not a bordered card. */
+    .achievement-item { border: none; padding: 0; border-radius: 0; margin-bottom: 10px; }
+    .level-dots { display: inline-flex; }
+  </style>
+</head>
+<body>
+  <div class="banner">
+    <div>
+      <h1 class="{{#if profileSettings.uppercaseName}}uppercase{{/if}}">{{basics.name}}</h1>
+      {{#if profileSettings.showHeadline}}<p class="label">{{basics.headline}}</p>{{/if}}
+      <p class="contact">
+        {{#if profileSettings.showPhone}}{{#if basics.phone}}<span>{{icon "phone"}}{{basics.phone}}</span>{{/if}}{{/if}}
+        {{#if profileSettings.showEmail}}{{#if basics.email}}<span>{{icon "email"}}{{basics.email}}</span>{{/if}}{{/if}}
+        {{#if profileSettings.showWebsite}}{{#if basics.website.url}}<span>{{icon "link"}}{{basics.website.url}}</span>{{/if}}{{/if}}
+        {{#if profileSettings.showLocation}}{{#if basics.location}}<span>{{icon "location"}}{{basics.location}}</span>{{/if}}{{/if}}
+      </p>
+    </div>
+    {{#unless picture.hidden}}{{#if picture.url}}
+      <img class="photo {{#if (eq profileSettings.photoStyle "square")}}photo-square{{/if}}" src="{{picture.url}}" />
+    {{/if}}{{/unless}}
+  </div>
+
+  <div class="body-content">
+    {{#unless summary.hidden}}{{#if summary.content.length}}
+    <section>
+      <h2>{{icon "summary"}}{{summary.title}}</h2>
+      {{{richText summary.content}}}
+    </section>
+    {{/if}}{{/unless}}
+    <div class="columns">
+      <div class="column-main">
+        {{#each columns.[0]}}{{> sectionsBody}}{{/each}}
+      </div>
+      <div class="column-side">
+        {{#each columns.[1]}}{{> sectionsBody}}{{/each}}
+      </div>
+    </div>
+  </div>
+</body>
+</html>

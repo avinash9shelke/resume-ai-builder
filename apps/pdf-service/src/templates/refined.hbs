@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>{{basics.name}} - Resume</title>
+  <style>
+    {{> baseStyles}}
+    body {
+      --accent: {{accentColor}};
+      --subtitle-weight: {{subtitleWeight}};
+      --subtitle-style: {{subtitleFontStyle}};
+      font-family: {{fontFamily}}, 'Helvetica Neue', Arial, sans-serif;
+      color: #1f2937;
+      margin: 0;
+      font-size: {{fontSize}}px;
+      line-height: 1.5;
+    }
+    .page { display: flex; min-height: 100vh; }
+    .sidebar {
+      flex: 0 0 32%;
+      background: #f3f4f6;
+      padding: 28px 22px;
+    }
+    .main { flex: 1; min-width: 0; padding: 28px 30px; }
+    .photo { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; margin-bottom: 10px; }
+    .photo.photo-square { border-radius: 8px; }
+    h1 { font-size: 18px; margin: 0 0 2px; font-weight: 700; }
+    h1.uppercase { text-transform: uppercase; }
+    .label { font-size: 11px; color: #4b5563; margin: 0 0 12px; }
+    .contact { font-size: 9.5px; color: #4b5563; margin-bottom: 16px; }
+    .contact div { margin-bottom: 4px; }
+    section { margin-bottom: 14px; }
+    h2 {
+      font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em;
+      color: var(--accent); margin: 0 0 8px; font-weight: 700;
+    }
+    .main h2 { border-bottom: 1px solid #e5e7eb; padding-bottom: 4px; }
+    .item { margin-bottom: 10px; }
+    .item-title { font-weight: 700; font-size: 11px; }
+    .item-subtitle { font-size: 10px; }
+    .item-dates { float: right; color: #6b7280; font-size: 9.5px; }
+    .tags span { background: #e5e7eb; color: #374151; }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 4px 10px; }
+    .icon-avatar { background: #e5e7eb; color: #4b5563; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <aside class="sidebar">
+      {{#unless picture.hidden}}{{#if picture.url}}
+        <img class="photo {{#if (eq profileSettings.photoStyle "square")}}photo-square{{/if}}" src="{{picture.url}}" />
+      {{/if}}{{/unless}}
+      <h1 class="{{#if profileSettings.uppercaseName}}uppercase{{/if}}">{{basics.name}}</h1>
+      {{#if profileSettings.showHeadline}}<p class="label">{{basics.headline}}</p>{{/if}}
+      <div class="contact">
+        {{#if profileSettings.showEmail}}{{#if basics.email}}<div>{{icon "email"}}{{basics.email}}</div>{{/if}}{{/if}}
+        {{#if profileSettings.showPhone}}{{#if basics.phone}}<div>{{icon "phone"}}{{basics.phone}}</div>{{/if}}{{/if}}
+        {{#if profileSettings.showLocation}}{{#if basics.location}}<div>{{icon "location"}}{{basics.location}}</div>{{/if}}{{/if}}
+        {{#if profileSettings.showWebsite}}{{#if basics.website.url}}<div>{{icon "link"}}{{basics.website.url}}</div>{{/if}}{{/if}}
+        {{#each basics.customFields}}{{#if text}}<div>{{text}}</div>{{/if}}{{/each}}
+      </div>
+      {{#unless summary.hidden}}{{#if summary.content.length}}
+      <section>
+        <h2>{{icon "summary"}}{{summary.title}}</h2>
+        {{{richText summary.content}}}
+      </section>
+      {{/if}}{{/unless}}
+      {{#each columns.[0]}}{{> sectionsBody}}{{/each}}
+    </aside>
+    <main class="main">
+      {{#each columns.[1]}}{{> sectionsBody}}{{/each}}
+    </main>
+  </div>
+</body>
+</html>

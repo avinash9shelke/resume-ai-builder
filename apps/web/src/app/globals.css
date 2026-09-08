@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #f9fafb;
+  --foreground: #111827;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Tiptap rich-text entry editors (see components/editor/RichTextEntryEditor.tsx) */
+.rich-text-entry {
+  outline: none;
+}
+.rich-text-entry p {
+  margin: 0;
+}
+.rich-text-entry a {
+  color: #4f46e5;
+  text-decoration: underline;
+}
+.rich-text-entry.is-editor-empty:first-child::before,
+.rich-text-entry p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #9ca3af;
+  pointer-events: none;
+  height: 0;
+}

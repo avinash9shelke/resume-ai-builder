@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>{{basics.name}} - Resume</title>
+  <style>
+    {{> baseStyles}}
+    body {
+      --accent: {{accentColor}};
+      --subtitle-weight: {{subtitleWeight}};
+      --subtitle-style: {{subtitleFontStyle}};
+      font-family: {{fontFamily}}, 'Helvetica Neue', Arial, sans-serif;
+      color: #1f2937;
+      margin: 0;
+      padding: 34px 44px;
+      font-size: {{fontSize}}px;
+      line-height: 1.5;
+    }
+    header {
+      display: flex; justify-content: space-between; align-items: baseline;
+      border-bottom: 2px solid #111827; padding-bottom: 10px; margin-bottom: 16px;
+    }
+    h1 { font-size: 20px; margin: 0; font-weight: 700; }
+    h1.uppercase { text-transform: uppercase; }
+    .label { font-size: 12px; font-style: italic; color: #4b5563; margin: 0; }
+    .contact { font-size: 9.5px; color: #4b5563; margin-top: 4px; }
+    .contact span { margin-right: 10px; }
+    section { margin-bottom: 13px; padding-bottom: 13px; border-bottom: 1px solid #f3f4f6; }
+    section:last-child { border-bottom: none; }
+    h2 {
+      font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;
+      color: #111827; margin: 0 0 8px; font-weight: 700;
+    }
+    .item-title { font-weight: 700; font-size: 11px; }
+    .item-subtitle { font-size: 10px; }
+    .item-dates { float: right; font-size: 9.5px; color: #6b7280; }
+    .tags span { border: 1px solid #d1d5db; color: #374151; }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 4px 14px; }
+    .icon-avatar { background: #f3f4f6; color: #4b5563; }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1 class="{{#if profileSettings.uppercaseName}}uppercase{{/if}}">{{basics.name}}</h1>
+      <div class="contact">
+        {{#if profileSettings.showEmail}}{{#if basics.email}}<span>{{icon "email"}}{{basics.email}}</span>{{/if}}{{/if}}
+        {{#if profileSettings.showPhone}}{{#if basics.phone}}<span>{{icon "phone"}}{{basics.phone}}</span>{{/if}}{{/if}}
+        {{#if profileSettings.showLocation}}{{#if basics.location}}<span>{{icon "location"}}{{basics.location}}</span>{{/if}}{{/if}}
+      </div>
+    </div>
+    {{#if profileSettings.showHeadline}}<p class="label">{{basics.headline}}</p>{{/if}}
+  </header>
+
+  {{#unless summary.hidden}}{{#if summary.content.length}}
+  <section>
+    <h2>{{icon "summary"}}{{summary.title}}</h2>
+    {{{richText summary.content}}}
+  </section>
+  {{/if}}{{/unless}}
+  {{#each columns}}
+    {{#each this}}{{> sectionsBody}}{{/each}}
+  {{/each}}
+</body>
+</html>

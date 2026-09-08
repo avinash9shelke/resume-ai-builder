@@ -1,0 +1,185 @@
+{{#if (eq kind "experience")}}
+  {{#if @root.sections.experience.items.length}}
+  <section>
+    <h2>{{icon "experience"}}{{@root.sections.experience.title}}</h2>
+    {{#each @root.sections.experience.items}}
+      {{#if logo}}
+      <div class="icon-item">
+        <img class="item-logo" src="{{logo}}" />
+        <div>
+          {{#if period}}<span class="item-dates">{{period}}</span>{{/if}}
+          <div class="item-title">{{position}}</div>
+          <div class="item-subtitle">{{company}}{{#if location}}, {{location}}{{/if}}</div>
+          {{#if description.length}}{{{richText description}}}{{/if}}
+        </div>
+      </div>
+      {{else}}
+      <div class="item">
+        {{#if period}}<span class="item-dates">{{period}}</span>{{/if}}
+        <div class="item-title">{{position}}</div>
+        <div class="item-subtitle">{{company}}{{#if location}}, {{location}}{{/if}}</div>
+        {{#if description.length}}{{{richText description}}}{{/if}}
+      </div>
+      {{/if}}
+    {{/each}}
+  </section>
+  {{/if}}
+{{/if}}
+{{#if (eq kind "education")}}
+  {{#if @root.sections.education.items.length}}
+  <section>
+    <h2>{{icon "education"}}{{@root.sections.education.title}}</h2>
+    {{#each @root.sections.education.items}}
+      <div class="item">
+        {{#if period}}<span class="item-dates">{{period}}</span>{{/if}}
+        <div class="item-title">{{school}}</div>
+        <div class="item-subtitle">{{degree}} {{area}}</div>
+        {{#if grade}}<p>Grade: {{grade}}</p>{{/if}}
+      </div>
+    {{/each}}
+  </section>
+  {{/if}}
+{{/if}}
+{{#if (eq kind "skills")}}
+  {{#if @root.sections.skills.items.length}}
+  <section>
+    <h2>{{icon "skills"}}{{@root.sections.skills.title}}</h2>
+    <div class="skill-tags">
+      {{#each @root.sections.skills.items}}<span class="skill-tag">{{name}}</span>{{/each}}
+    </div>
+  </section>
+  {{/if}}
+{{/if}}
+{{#if (eq kind "projects")}}
+  {{#if @root.sections.projects.items.length}}
+  <section>
+    <h2>{{icon "projects"}}{{@root.sections.projects.title}}</h2>
+    {{#each @root.sections.projects.items}}
+      <div class="item">
+        {{#if period}}<span class="item-dates">{{period}}</span>{{/if}}
+        <div class="item-title">{{name}}</div>
+        {{#if description.length}}{{{richText description}}}{{/if}}
+      </div>
+    {{/each}}
+  </section>
+  {{/if}}
+{{/if}}
+{{#if (eq kind "certifications")}}
+  {{#if @root.sections.certifications.items.length}}
+  <section>
+    <h2>{{icon "certifications"}}{{@root.sections.certifications.title}}</h2>
+    {{#each @root.sections.certifications.items}}
+      <div class="item">
+        {{#if date}}<span class="item-dates">{{date}}</span>{{/if}}
+        <div class="item-title">{{title}}</div>
+        {{#if issuer}}<div class="item-subtitle">{{issuer}}</div>{{/if}}
+        {{#if description.length}}{{{richText description}}}{{/if}}
+      </div>
+    {{/each}}
+  </section>
+  {{/if}}
+{{/if}}
+{{#if (eq kind "publications")}}
+  {{#if @root.sections.publications.items.length}}
+  <section>
+    <h2>{{icon "publications"}}{{@root.sections.publications.title}}</h2>
+    {{#each @root.sections.publications.items}}
+      <div class="item">
+        {{#if date}}<span class="item-dates">{{date}}</span>{{/if}}
+        <div class="item-title">{{title}}</div>
+        {{#if publisher}}<div class="item-subtitle">{{publisher}}</div>{{/if}}
+        {{#if description.length}}{{{richText description}}}{{/if}}
+      </div>
+    {{/each}}
+  </section>
+  {{/if}}
+{{/if}}
+{{#if (eq kind "volunteer")}}
+  {{#if @root.sections.volunteer.items.length}}
+  <section>
+    <h2>{{icon "volunteer"}}{{@root.sections.volunteer.title}}</h2>
+    {{#each @root.sections.volunteer.items}}
+      <div class="item">
+        {{#if period}}<span class="item-dates">{{period}}</span>{{/if}}
+        <div class="item-title">{{organization}}</div>
+        {{#if location}}<div class="item-subtitle">{{location}}</div>{{/if}}
+        {{#if description.length}}{{{richText description}}}{{/if}}
+      </div>
+    {{/each}}
+  </section>
+  {{/if}}
+{{/if}}
+{{#if (eq kind "awards")}}
+  {{#if @root.sections.awards.items.length}}
+  <section>
+    <h2>{{icon "awards"}}{{@root.sections.awards.title}}</h2>
+    {{#each @root.sections.awards.items}}
+      <div class="achievement-item">
+        <span class="icon-avatar">{{icon "awards"}}</span>
+        <div>
+          {{#if date}}<span class="item-dates">{{date}}</span>{{/if}}
+          <div class="item-title">{{title}}</div>
+          {{#if awarder}}<div class="item-subtitle">{{awarder}}</div>{{/if}}
+          {{#if description.length}}{{{richText description}}}{{/if}}
+        </div>
+      </div>
+    {{/each}}
+  </section>
+  {{/if}}
+{{/if}}
+{{#if (eq kind "custom")}}
+  <section>
+    <h2>{{custom.title}}</h2>
+    {{#each custom.items}}
+      <div class="icon-item">
+        {{#if ../custom.icon}}<span class="icon-avatar">&#9670;</span>{{/if}}
+        <div>
+          {{#if ../custom.showDate}}<span class="item-dates">{{date}}</span>{{/if}}
+          <div class="item-title">{{title}}</div>
+          {{#if description.length}}{{{richText description}}}{{/if}}
+        </div>
+      </div>
+    {{/each}}
+  </section>
+{{/if}}
+{{#if (eq kind "languages")}}
+  {{#if @root.sections.languages.items.length}}
+  <section>
+    <h2>{{icon "languages"}}{{@root.sections.languages.title}}</h2>
+    {{#each @root.sections.languages.items}}
+      <div class="item">
+        <span class="item-title">{{language}}</span>
+        <span class="item-subtitle">{{fluency}}</span>
+        {{levelDots level}}
+      </div>
+    {{/each}}
+  </section>
+  {{/if}}
+{{/if}}
+{{#if (eq kind "interests")}}
+  {{#if @root.sections.interests.items.length}}
+  <section>
+    <h2>{{icon "interests"}}{{@root.sections.interests.title}}</h2>
+    {{#each @root.sections.interests.items}}
+      <div class="item">
+        <div class="item-title">{{name}}</div>
+        {{#if keywords.length}}<div class="tags">{{#each keywords}}<span>{{this}}</span>{{/each}}</div>{{/if}}
+      </div>
+    {{/each}}
+  </section>
+  {{/if}}
+{{/if}}
+{{#if (eq kind "references")}}
+  {{#if @root.sections.references.items.length}}
+  <section>
+    <h2>{{icon "references"}}{{@root.sections.references.title}}</h2>
+    {{#each @root.sections.references.items}}
+      <div class="item">
+        <div class="item-title">{{name}}</div>
+        {{#if position}}<div class="item-subtitle">{{position}}</div>{{/if}}
+        {{#if description.length}}{{{richText description}}}{{/if}}
+      </div>
+    {{/each}}
+  </section>
+  {{/if}}
+{{/if}}

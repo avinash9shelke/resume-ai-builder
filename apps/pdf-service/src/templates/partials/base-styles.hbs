@@ -1,0 +1,55 @@
+* { box-sizing: border-box; }
+ul { margin: 4px 0 0; padding-left: 16px; }
+li { margin-bottom: 2px; }
+p { margin: 0 0 4px; }
+.tags span {
+  display: inline-block; border-radius: 999px; padding: 2px 9px;
+  margin: 2px 4px 0 0; font-size: 9.5px;
+  background: color-mix(in srgb, var(--accent) 12%, white);
+  color: var(--accent);
+}
+.entry-date { font-size: 10px; font-weight: normal; }
+.icon-item { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 8px; }
+.icon-avatar {
+  display: flex; align-items: center; justify-content: center;
+  width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0; font-size: 11px;
+}
+/* Small monochrome icons before contact fields and section headings. */
+.ic { width: 11px; height: 11px; flex-shrink: 0; vertical-align: middle; margin-right: 4px; position: relative; top: -1px; }
+h2 .ic { width: 12px; height: 12px; }
+.contact .ic, .contact-item .ic { color: var(--accent); }
+.icon-avatar .ic { width: 11px; height: 11px; margin-right: 0; top: 0; }
+
+/* Skill tags render as rounded pill "chips" (design reference: screenshot) rather than underlined text. */
+.skill-tag {
+  display: inline-block; font-size: 10px; padding: 3px 10px; margin: 2px 4px 2px 0;
+  border-radius: 999px; background: color-mix(in srgb, var(--accent) 12%, white);
+  color: var(--accent); text-decoration: none;
+}
+/* Company/institution/issuer subtext picks up the accent color for a bit of visual pop.
+   Weight/style are driven by the "Subtitle style" layout control (see templateEngine.ts). */
+.item-subtitle { color: var(--accent); font-weight: var(--subtitle-weight, 500); font-style: var(--subtitle-style, normal); }
+
+/* "Key achievement"-style boxed cards (used for the Awards section, design reference: screenshot):
+   icon avatar + bold title + description inside a bordered card, instead of a plain list entry. */
+.achievement-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  border: 1px solid color-mix(in srgb, var(--accent) 20%, #e5e7eb);
+  border-radius: 8px; padding: 8px 10px; margin-bottom: 8px;
+}
+.achievement-item .icon-avatar {
+  background: color-mix(in srgb, var(--accent) 14%, white); color: var(--accent);
+}
+.achievement-item .item-title { margin-bottom: 1px; }
+
+/* Optional company logo shown next to an Experience entry (design reference:
+   user-provided screenshot) — object-fit: contain (not a forced circle like
+   .icon-avatar) since real company logos are rarely square. */
+.item-logo { width: 22px; height: 22px; object-fit: contain; flex-shrink: 0; margin-top: 1px; }
+
+/* Language/skill proficiency dot-rating row (design reference: screenshot).
+   Hidden by default — most templates just show the text fluency/proficiency
+   label; a template opts in with `.level-dots { display: inline-flex; }`. */
+.level-dots { display: none; gap: 3px; vertical-align: middle; margin-left: 6px; }
+.level-dot { width: 7px; height: 7px; border-radius: 50%; background: color-mix(in srgb, var(--accent) 25%, white); }
+.level-dot.filled { background: var(--accent); }

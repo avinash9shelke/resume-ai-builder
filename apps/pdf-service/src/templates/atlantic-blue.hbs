@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>{{basics.name}} - Resume</title>
+  <style>
+    {{> baseStyles}}
+    body {
+      --accent: {{accentColor}};
+      --subtitle-weight: {{subtitleWeight}};
+      --subtitle-style: {{subtitleFontStyle}};
+      font-family: {{fontFamily}}, 'Helvetica Neue', Arial, sans-serif;
+      color: #1f2937;
+      margin: 0;
+      font-size: {{fontSize}}px;
+      line-height: 1.5;
+    }
+    .page { display: flex; min-height: 100vh; }
+    .sidebar {
+      flex: 0 0 34%;
+      background: #0f2f52;
+      color: #e0f2fe;
+      padding: 30px 24px;
+      text-align: center;
+    }
+    .main { flex: 1; min-width: 0; padding: 28px 30px; }
+    .photo { width: 68px; height: 68px; border-radius: 50%; object-fit: cover; margin: 0 auto 12px; display: block; }
+    .photo.photo-square { border-radius: 8px; }
+    h1 { font-size: 17px; margin: 0 0 2px; font-weight: 700; color: #fff; }
+    h1.uppercase { text-transform: uppercase; }
+    .label { font-size: 10.5px; color: #93c5fd; margin: 0 0 12px; }
+    .contact { font-size: 9.5px; color: #bfdbfe; margin-bottom: 18px; }
+    .contact div { margin-bottom: 4px; }
+    section { margin-bottom: 14px; text-align: left; }
+    .sidebar h2 { color: #93c5fd; border-bottom-color: rgba(255,255,255,0.25); }
+    .main h2 { color: var(--accent); border-bottom: 1px solid #e5e7eb; }
+    h2 {
+      font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em;
+      margin: 0 0 8px; font-weight: 700; padding-bottom: 4px;
+    }
+    .sidebar .item-title, .sidebar .item-subtitle, .sidebar .item-dates { color: #e0f2fe; }
+    .sidebar .skill-tag, .sidebar .tags span { background: rgba(255,255,255,0.15); color: #e0f2fe; }
+    .sidebar .icon-avatar { background: rgba(255,255,255,0.15); color: #e0f2fe; }
+    .main .item-title { font-weight: 700; font-size: 11px; }
+    .main .item-subtitle { font-size: 10px; }
+    .item-dates { float: right; font-size: 9.5px; color: #6b7280; }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 4px 10px; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <aside class="sidebar">
+      {{#unless picture.hidden}}{{#if picture.url}}
+        <img class="photo {{#if (eq profileSettings.photoStyle "square")}}photo-square{{/if}}" src="{{picture.url}}" />
+      {{/if}}{{/unless}}
+      <h1 class="{{#if profileSettings.uppercaseName}}uppercase{{/if}}">{{basics.name}}</h1>
+      {{#if profileSettings.showHeadline}}<p class="label">{{basics.headline}}</p>{{/if}}
+      <div class="contact">
+        {{#if profileSettings.showEmail}}{{#if basics.email}}<div>{{icon "email"}}{{basics.email}}</div>{{/if}}{{/if}}
+        {{#if profileSettings.showPhone}}{{#if basics.phone}}<div>{{icon "phone"}}{{basics.phone}}</div>{{/if}}{{/if}}
+        {{#if profileSettings.showLocation}}{{#if basics.location}}<div>{{icon "location"}}{{basics.location}}</div>{{/if}}{{/if}}
+        {{#if profileSettings.showWebsite}}{{#if basics.website.url}}<div>{{icon "link"}}{{basics.website.url}}</div>{{/if}}{{/if}}
+        {{#each basics.customFields}}{{#if text}}<div>{{text}}</div>{{/if}}{{/each}}
+      </div>
+      {{#unless summary.hidden}}{{#if summary.content.length}}
+      <section>
+        <h2>{{icon "summary"}}{{summary.title}}</h2>
+        {{{richText summary.content}}}
+      </section>
+      {{/if}}{{/unless}}
+      {{#each columns.[0]}}{{> sectionsBody}}{{/each}}
+    </aside>
+    <main class="main">
+      {{#each columns.[1]}}{{> sectionsBody}}{{/each}}
+    </main>
+  </div>
+</body>
+</html>

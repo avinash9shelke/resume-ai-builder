@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>{{basics.name}} - Resume</title>
+  <style>
+    {{> baseStyles}}
+    body {
+      --accent: {{accentColor}};
+      --subtitle-weight: {{subtitleWeight}};
+      --subtitle-style: {{subtitleFontStyle}};
+      font-family: {{fontFamily}}, 'Helvetica Neue', Arial, sans-serif;
+      color: #1f2937;
+      margin: 0;
+      padding: 28px 36px;
+      font-size: {{fontSize}}px;
+      line-height: 1.5;
+    }
+    header { margin-bottom: 14px; }
+    h1 { font-size: 20px; margin: 0 0 2px; font-weight: 800; color: var(--accent); letter-spacing: 0.01em; }
+    h1.uppercase { text-transform: uppercase; }
+    .label { font-size: 11px; color: var(--accent); margin: 0 0 6px; font-weight: 600; }
+    .contact { font-size: 9.5px; color: #4b5563; }
+    .contact span { margin-right: 12px; }
+    .columns { display: flex; gap: 28px; }
+    .column-main { flex: 1.5; min-width: 0; }
+    .column-side { flex: 1; min-width: 0; }
+    section { margin-bottom: 14px; }
+    h2 {
+      font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--accent); border-bottom: 2px solid var(--accent); padding-bottom: 4px; margin: 0 0 8px; font-weight: 800;
+    }
+    /* Thin dotted rule between successive entries, instead of extra margin alone (design reference: screenshot). */
+    .column-main .item, .column-main .icon-item { padding-bottom: 8px; margin-bottom: 8px; border-bottom: 1px dotted #d1d5db; }
+    .column-main .item:last-child, .column-main .icon-item:last-child { border-bottom: none; }
+    .item-title { font-weight: 700; font-size: 11px; }
+    .item-subtitle { font-size: 10px; }
+    .item-dates { float: right; font-size: 9.5px; color: #6b7280; }
+    /* Outlined (not filled) skill pills (design reference: screenshot). */
+    .tags span, .skill-tag { background: transparent; border: 1px solid color-mix(in srgb, var(--accent) 35%, #d1d5db); color: #374151; }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 4px 8px; }
+    .icon-avatar { background: color-mix(in srgb, var(--accent) 12%, white); color: var(--accent); width: 16px; height: 16px; font-size: 9px; }
+    .icon-item { gap: 6px; margin-bottom: 6px; }
+    .achievement-item { border: none; padding: 0; border-radius: 0; }
+    .level-dots { display: inline-flex; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1 class="{{#if profileSettings.uppercaseName}}uppercase{{/if}}">{{basics.name}}</h1>
+    {{#if profileSettings.showHeadline}}<p class="label">{{basics.headline}}</p>{{/if}}
+    <p class="contact">
+      {{#if profileSettings.showPhone}}{{#if basics.phone}}<span>{{icon "phone"}}{{basics.phone}}</span>{{/if}}{{/if}}
+      {{#if profileSettings.showEmail}}{{#if basics.email}}<span>{{icon "email"}}{{basics.email}}</span>{{/if}}{{/if}}
+      {{#if profileSettings.showWebsite}}{{#if basics.website.url}}<span>{{icon "link"}}{{basics.website.url}}</span>{{/if}}{{/if}}
+      {{#if profileSettings.showLocation}}{{#if basics.location}}<span>{{icon "location"}}{{basics.location}}</span>{{/if}}{{/if}}
+    </p>
+  </header>
+
+  <div class="columns">
+    <div class="column-main">
+      {{#unless summary.hidden}}{{#if summary.content.length}}
+      <section>
+        <h2>{{icon "summary"}}{{summary.title}}</h2>
+        {{{richText summary.content}}}
+      </section>
+      {{/if}}{{/unless}}
+      {{#each columns.[0]}}{{> sectionsBody}}{{/each}}
+    </div>
+    <div class="column-side">
+      {{#each columns.[1]}}{{> sectionsBody}}{{/each}}
+    </div>
+  </div>
+</body>
+</html>
