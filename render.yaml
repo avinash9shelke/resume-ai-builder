@@ -1,0 +1,59 @@
+# Render Blueprint: deploys this repo as a SINGLE web service. All five
+# apps (web, ai-service, pii-data-service, ats-service, pdf-service) are
+# packaged into one Docker image (see root Dockerfile) and run as sibling
+# processes supervised by docker/supervisord.conf inside one container.
+#
+# Both MongoDB and Redis are self-hosted here as their own Render "Private
+# Services" running the official `mongo`/`redis` images, rather than
+# Render-managed database/Key Value products. Neither is publicly
+# reachable; only other services in this same Render project can reach
+# them, over their private hostname (each service's own `name`) - see
+# https://render.com/docs/private-services and https://render.com/docs/disks.
+#
+# Deploy: https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: resume-ai-builder
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: standard # Puppeteer/Chromium + spaCy/Presidio need more than the free tier's RAM
+    healthCheckPath: /
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: OPENAI_MODEL
+        value: gpt-5-nano
+      - key: MONGODB_URL
+        value: mongodb://resume-ai-builder-mongo:27017
+      - key: MONGODB_DB_NAME
+        value: resume_ai
+      - key: REDIS_URL
+        value: redis://resume-ai-builder-redis:6379/0
+
+  # Self-hosted MongoDB container - a private (internal-only) service, not a
+  # Render-managed database product. Disks require a paid plan (not
+  # available on the free plan), and the region must match the web
+  # service's region for Render's private networking to connect them.
+  - type: pserv
+    name: resume-ai-builder-mongo
+    runtime: image
+    image:
+      url: docker.io/library/mongo:7
+    plan: starter
+    disk:
+      name: mongo-data
+      mountPath: /data/db
+      sizeGB: 5
+
+  # Self-hosted Redis container - only backs the PII mask<->original-value
+  # mapping (short TTL, ~10 min - see pii-data-service/app/config.py), so no
+  # disk is attached; losing it on a restart just means in-flight PII
+  # mask/unmask round trips get skipped, which degrades gracefully (see
+  # ai-service/app/services/pii_client.py).
+  - type: pserv
+    name: resume-ai-builder-redis
+    runtime: image
+    image:
+      url: docker.io/library/redis:7-alpine
+    plan: starter

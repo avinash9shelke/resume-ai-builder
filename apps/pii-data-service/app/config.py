@@ -8,7 +8,7 @@ class Settings(BaseSettings):
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
-    redis_url: str = "redis://redis:6379/0"
+    redis_url: str = "redis://localhost:6379/0"
     # How long a mask <-> original-value mapping lives in Redis before it
     # expires. Only needs to outlive a single mask -> LLM -> unmask round
     # trip, so this is intentionally short.

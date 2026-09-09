@@ -43,13 +43,37 @@ before `apps/web` or `apps/pdf-service` can resolve them.
   `pytest tests/ -v`, `black app/`, `flake8 app/ --max-line-length=110 --extend-ignore=E203`.
   No DB/external services to mock — pure functions in `app/scoring.py`.
 
-## Docker
-- `docker compose up --build` runs mongo, redis, pii-data-service, ai-service, ats-service, pdf-service, web.
-- pdf-service's Dockerfile installs a system `chromium` package and sets
+## Docker / Deployment
+- All five apps are built into **one** image from the root `Dockerfile` and
+  run as sibling processes in one container via `docker/supervisord.conf`
+  (`web` on `$PORT`; `ai-service`/`pii-data-service`/`ats-service`/
+  `pdf-service` on fixed `127.0.0.1` ports 8000/8100/8200/4000). This is what
+  lets the whole thing deploy as a single Render "Web Service" — see
+  `render.yaml` and the "Deployment Topology" section of ARCHITECTURE.md.
+  There are no more per-app Dockerfiles under `apps/*`.
+- `docker compose up --build` now runs just `mongo`, `redis`, and `app`
+  (the one consolidated image) for local dev/integration testing.
+- The runtime image installs a system `chromium` package and sets
   `PUPPETEER_SKIP_DOWNLOAD`/`PUPPETEER_EXECUTABLE_PATH` — Puppeteer's bundled
   Chromium download does not support linux/arm64, which matters on Apple Silicon.
-- Build context for `pdf-service` and `web` Dockerfiles is the **repo root**
-  (not the app dir), so they can install the shared workspace packages.
+- The three Python services (`ai-service`, `ats-service`, `pii-data-service`)
+  are each installed into their own dedicated `python:3.12-slim-bookworm`
+  build stage (pinned to `-bookworm` to match `node:20-slim`'s glibc — the
+  untagged `python:3.12-slim` moved to a newer Debian base with an
+  incompatible glibc), then that whole stage's `/usr/local` (interpreter +
+  stdlib + libpython + site-packages) is copied into the final
+  `node:20-slim`-based runtime stage at `/opt/py-ai`, `/opt/py-ats`,
+  `/opt/py-pii` respectively, to avoid dependency conflicts between e.g.
+  LangChain and Presidio/spaCy while still ending up in one image.
+- For a real deploy, MongoDB and Redis must be external since Render web
+  service containers are ephemeral. `render.yaml` self-hosts *both* as
+  their own Render services (`type: pserv`) running the official `mongo`
+  and `redis` images directly — not MongoDB Atlas or Render's managed Key
+  Value product. `resume-ai-builder-mongo` has a persistent Disk attached
+  (`resume-ai-builder-redis` doesn't need one — it only backs a short-TTL
+  cache). Both are reachable from the web service only over Render's
+  private network, at `mongodb://resume-ai-builder-mongo:27017` and
+  `redis://resume-ai-builder-redis:6379/0`.
 
 ## Notes
 - No login/auth is implemented; anonymous per-browser sessions are tracked

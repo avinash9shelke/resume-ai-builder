@@ -1,7 +1,51 @@
 # System Architecture: ResumeCraft.ai
 
+## Deployment Topology
+The five apps below are developed as separate codebases under `apps/*`
+(each still has its own FastAPI/Express app, own tests, own `AGENTS.md`
+build/test commands), but are no longer *deployed* as separate
+microservices/containers. They're built into a **single Docker image** (see
+the root `Dockerfile`) and run as sibling processes inside **one container**,
+supervised by `docker/supervisord.conf`:
+
+| Process           | Bind address       | Reachable from                         |
+|--------------------|---------------------|-----------------------------------------|
+| `web` (Next.js)   | `0.0.0.0:$PORT`     | Externally (this is the only port Render/the container exposes) |
+| `ai-service`      | `127.0.0.1:8000`    | Only `web`, inside the container        |
+| `pii-data-service`| `127.0.0.1:8100`    | Only `ai-service`, inside the container |
+| `ats-service`     | `127.0.0.1:8200`    | Only `web`, inside the container        |
+| `pdf-service`     | `127.0.0.1:4000`    | Only `web`, inside the container        |
+
+This is what lets the whole app deploy as a single Render "Web Service"
+(Render only routes external traffic to one container/one port per service).
+The former docker-compose service-discovery hostnames (`ai-service`,
+`pdf-service`, etc.) are gone — each app's `*_SERVICE_URL`/`*_URL` env var
+now defaults to `127.0.0.1`/`localhost` at its fixed port instead, and the
+HTTP contracts between them are otherwise unchanged (`web`'s API routes
+still proxy JSON/multipart over HTTP to the others; `ai-service`'s
+`pii_client.py` still calls `pii-data-service`'s `/mask` and `/unmask`).
+Local development can still run everything via `docker-compose up --build`
+(now just `app` + `mongo` + `redis`), or each app individually as before
+(`npm run dev:web`, `uvicorn app.main:app`, ...) pointed at each other via
+the same env vars.
+
+MongoDB and Redis are **not** bundled into the app image — a Render web
+service's container is ephemeral/stateless, so both must be externally
+hosted. `render.yaml` self-hosts *both* as their own Render "Private
+Services" (`resume-ai-builder-mongo` running the official `mongo` image
+with a persistent Disk; `resume-ai-builder-redis` running `redis:7-alpine`,
+no disk needed since it only backs a short-TTL cache) rather than
+Render-managed database/Key Value products. The web service reaches them
+over Render's private network at `mongodb://resume-ai-builder-mongo:27017`
+and `redis://resume-ai-builder-redis:6379/0` - those hostnames are only
+resolvable/reachable from other services in the same Render project, not
+publicly.
+
 ## High-Level Architecture
-The system follows a **Microservices Architecture** on the backend and is designed to support a **Micro-frontend** approach on the frontend using Next.js.
+The system is internally organized as a set of loosely-coupled
+service-like modules (each with its own FastAPI/Express app and HTTP API),
+but — per the Deployment Topology above — is packaged and deployed as a
+single service, not as independently-deployed microservices/micro-frontends.
 
 ### 1. Frontend (Next.js)
 - **Framework:** Next.js (App Router).
