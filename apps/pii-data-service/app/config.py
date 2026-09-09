@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     # expires. Only needs to outlive a single mask -> LLM -> unmask round
     # trip, so this is intentionally short.
     mapping_ttl_seconds: int = 60 * 10
-    cors_origins: list[str] = ["http://localhost:3000", "http://localhost:8000"]
+    cors_origins: list[str] = ["https://resume-ai-builder-2e5z.onrender.com", "https://unincinerated-wava-semimanneristic.ngrok-free.dev"]
     # spaCy model used by Presidio's analyzer for NLP-based PII detection.
     spacy_model: str = "en_core_web_sm"
 
